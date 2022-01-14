@@ -1,4 +1,4 @@
-name: JVM CI with Gradle
+name: JVM test CI with Gradle
 
 on: [push, pull_request]
 
