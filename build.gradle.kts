@@ -26,7 +26,7 @@ java {
 
 val thisGroup = "by.citech"
 val thisArtifactId = "transport-layers"
-val thisVersion = "3.0.2"
+val thisVersion = "4.0.1"
 
 group = thisGroup
 version = thisVersion
@@ -80,8 +80,7 @@ dependencies {
     implementation(kotlin("test", "1.6.10"))
     implementation(kotlin("stdlib", "1.6.10"))
     testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("io.mockk:mockk-common:1.12.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }
 
 tasks.javadoc {
