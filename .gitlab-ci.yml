@@ -1,0 +1,21 @@
+image: gradle:7.3-jdk17
+
+build:
+  tags:
+    - share
+  script:
+    - gradle test
+  only:
+    - pushes
+  except:
+    - tags
+
+deploy:
+  tags:
+    - share
+  script:
+    - gradle clean build artifactoryPublish -b build.gradle.kts
+      -PartifactoryUser=$SECRET_ARTIFACTORY_PUBLISHER_USER
+      -PartifactoryPass=$SECRET_ARTIFACTORY_PUBLISHER_PASS
+  only:
+    - tags
