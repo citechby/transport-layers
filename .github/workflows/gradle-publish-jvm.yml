@@ -19,11 +19,8 @@ jobs:
         distribution: 'temurin'
     - name: Build, test and publish with Gradle
       uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
-      env:
-        ARTIFACTORY_USER: ${{ secrets.SECRET_ARTIFACTORY_PUBLISHER_USER }}
-        ARTIFACTORY_PASS: ${{ secrets.SECRET_ARTIFACTORY_PUBLISHER_PASS }}
       with:
         arguments: >
           clean build artifactoryPublish -b build.gradle.kts
-          -PartifactoryUser=$ARTIFACTORY_USER
-          -PartifactoryPass=$ARTIFACTORY_PASS
+          -PartifactoryUser=${{ secrets.SECRET_ARTIFACTORY_PUBLISHER_USER }}
+          -PartifactoryPass=${{ secrets.SECRET_ARTIFACTORY_PUBLISHER_PASS }}
