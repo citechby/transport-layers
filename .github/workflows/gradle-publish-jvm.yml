@@ -20,7 +20,7 @@ jobs:
     - name: Build, test and publish with Gradle
       uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
       with:
-        arguments: |
-           clean build artifactoryPublish -b build.gradle.kts \
-             -PartifactoryUser=$SECRET_ARTIFACTORY_PUBLISHER_USER \
-             -PartifactoryPass=$SECRET_ARTIFACTORY_PUBLISHER_PASS
+        arguments: >
+          clean build artifactoryPublish -b build.gradle.kts
+          -PartifactoryUser=$SECRET_ARTIFACTORY_PUBLISHER_USER
+          -PartifactoryPass=$SECRET_ARTIFACTORY_PUBLISHER_PASS
