@@ -1,7 +1,7 @@
 package by.citech.reqrsp.adapter.outputsrc
 
-class SimpleMutableOutputSrc<O> : MutableOutputSrc<O> {
-    @Volatile
+class SimpleMutableOutputSrc<O> : MutableOutputSrc<O>() {
+
     private var output: O? = null
 
     override fun put(output: O?) {

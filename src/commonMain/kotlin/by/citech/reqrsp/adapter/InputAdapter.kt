@@ -6,7 +6,7 @@ import by.citech.reqrsp.data.ReqMeta
 /**
  * Input messages adapter
  */
-interface InputAdapter<I> {
-    fun extractRspMeta(body: I): RspMeta?
-    fun extractReqMeta(body: I): ReqMeta?
+abstract class InputAdapter<I> {
+    abstract fun extractRspMeta(body: I): RspMeta?
+    abstract fun extractReqMeta(body: I): ReqMeta?
 }

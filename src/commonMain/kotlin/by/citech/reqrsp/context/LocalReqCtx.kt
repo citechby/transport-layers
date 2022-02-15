@@ -9,6 +9,5 @@ data class LocalReqCtx<I, O>(
     val rspHandler: RspHandler<I>? = null,
     var reqCnt: Long,
     var nextRepeatAfterTs: Long,
-    @Volatile
     var handledTs: Long? = null
 )

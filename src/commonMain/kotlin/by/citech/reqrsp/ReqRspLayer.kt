@@ -2,13 +2,13 @@ package by.citech.reqrsp
 
 import by.citech.reqrsp.adapter.RspHandler
 
-interface ReqRspLayer<O, I> {
+abstract class ReqRspLayer<O, I> {
     /**
      * Process state of layer.
      *
      * @param currTs Current timestamp.
      */
-    fun processState(currTs: Long)
+    abstract fun processState(currTs: Long)
 
     /**
      * @param reqBody    Message to send and to apply request-response semantics.
@@ -16,7 +16,7 @@ interface ReqRspLayer<O, I> {
      * @param reqTimings Timing settings.
      * @param rspHandler Response callback.
      */
-    fun output(
+    abstract fun output(
         reqBody: O,
         currTs: Long,
         reqTimings: ReqTimings?,
@@ -27,7 +27,7 @@ interface ReqRspLayer<O, I> {
      * @param rspBody Received message, possibly response.
      * @param currTs  Current timestamp.
      */
-    fun input(
+    abstract fun input(
         rspBody: I,
         currTs: Long
     ): InputResult

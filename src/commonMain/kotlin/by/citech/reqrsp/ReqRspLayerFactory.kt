@@ -6,8 +6,8 @@ import by.citech.reqrsp.adapter.ReqHandler
 import by.citech.reqrsp.adapter.TransportAdapter
 import by.citech.reqrsp.adapter.log.LogDst
 
-object ReqRspLayerFactory {
-    fun <I, O> create(
+class ReqRspLayerFactory<I, O> {
+    fun create(
         logId: String,
         inputAdapter: InputAdapter<I>,
         outputAdapter: OutputAdapter<O>,
