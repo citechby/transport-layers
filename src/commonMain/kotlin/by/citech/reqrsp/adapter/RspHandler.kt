@@ -5,9 +5,9 @@ import by.citech.reqrsp.data.Rsp
 /**
  * Remote response handler
  */
-fun interface RspHandler<I> {
+abstract class RspHandler<I> {
     /**
      * @param rsp remote response to local request
      */
-    fun handle(rsp: Rsp<I>)
+    abstract fun handle(rsp: Rsp<I>)
 }

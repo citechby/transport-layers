@@ -19,7 +19,7 @@ internal class ReqRspLayerImpl<O, I>(
     private val defaultReqTimings: ReqTimings,
     private val layerTimings: LayerTimings,
     private val logDst: LogDst
-) : ReqRspLayer<O, I> {
+) : ReqRspLayer<O, I>() {
 
     private val localReqMap: MutableMap<String, LocalReqCtx<I, O>> = mutableMapOf()
     private val remoteReqMap: MutableMap<String, RemoteReqCtx<O>> = mutableMapOf()

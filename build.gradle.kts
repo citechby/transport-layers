@@ -9,7 +9,7 @@ plugins {
     idea
     id("com.jfrog.artifactory") version "4.26.1"
     id("com.github.ben-manes.versions") version "0.41.0"
-    kotlin("jvm") version "1.6.10"
+    kotlin("multiplatform") version "1.6.10"
 }
 
 idea {
@@ -26,23 +26,11 @@ java {
 
 val thisGroup = "by.citech"
 val thisArtifactId = "transport-layers"
-val thisVersion = "4.0.1"
+val thisVersion = "4.0.2"
 
 group = thisGroup
 version = thisVersion
 java.sourceCompatibility = JavaVersion.VERSION_17
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenJava") {
-            groupId = thisGroup
-            artifactId = thisArtifactId
-            version = thisVersion
-
-            from(components["java"])
-        }
-    }
-}
 
 val artifactoryUrl: String by project
 val artifactoryRepo: String by project
@@ -71,16 +59,27 @@ artifactory {
             setProperty("maven", true)
         })
         defaults(delegateClosureOf<GroovyObject> {
-            invokeMethod("publications", "mavenJava")
+            invokeMethod("publications", arrayOf("jvm"))
         })
     })
 }
 
-dependencies {
-    implementation(kotlin("test", "1.6.10"))
-    implementation(kotlin("stdlib", "1.6.10"))
-    testImplementation("org.jetbrains.kotlin:kotlin-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+kotlin {
+    sourceSets {
+        jvm {
+            withJava()
+        }
+        val commonMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib"))
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test"))
+            }
+        }
+    }
 }
 
 tasks.javadoc {
@@ -89,12 +88,12 @@ tasks.javadoc {
     }
 }
 
-val compileKotlin: KotlinCompile by tasks
-compileKotlin.kotlinOptions {
+val compileKotlinJvm: KotlinCompile by tasks
+compileKotlinJvm.kotlinOptions {
     jvmTarget = java.sourceCompatibility.majorVersion
 }
 
-val compileTestKotlin: KotlinCompile by tasks
-compileTestKotlin.kotlinOptions {
+val compileTestKotlinJvm: KotlinCompile by tasks
+compileTestKotlinJvm.kotlinOptions {
     jvmTarget = java.sourceCompatibility.majorVersion
 }

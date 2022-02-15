@@ -1,12 +1,9 @@
 package by.citech.reqrsp
 
-import by.citech.reqrsp.ReqRspLayerFactory.create
-import by.citech.reqrsp.adapter.InputAdapter
-import by.citech.reqrsp.adapter.OutputAdapter
-import by.citech.reqrsp.adapter.ReqHandler
-import by.citech.reqrsp.adapter.TransportAdapter
+import by.citech.reqrsp.adapter.*
 import by.citech.reqrsp.adapter.outputsrc.OutputSrc
 import by.citech.reqrsp.data.ReqMeta
+import by.citech.reqrsp.data.Rsp
 import by.citech.reqrsp.data.RspMeta
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -17,7 +14,8 @@ internal class ReqRspLayerTest {
     fun test() {
         var inAdapterReqCnt = 0
         var inAdapterRspCnt = 0
-        val inAdapter = object : InputAdapter<InMsg> {
+
+        val inAdapter = object : InputAdapter<InMsg>() {
             override fun extractRspMeta(body: InMsg): RspMeta {
                 ++inAdapterRspCnt
                 return RspMeta(
@@ -38,7 +36,7 @@ internal class ReqRspLayerTest {
 
         var outAdapterReqCnt = 0
         var outAdapterRspCnt = 0
-        val outAdapter = object : OutputAdapter<OutMsg> {
+        val outAdapter = object : OutputAdapter<OutMsg>() {
             override fun insertReqMeta(body: OutMsg, m: ReqMeta): OutMsg {
                 ++outAdapterReqCnt
                 return body.copy(
@@ -59,29 +57,34 @@ internal class ReqRspLayerTest {
 
         var transAdapterCnt = 0
         var reqId: String? = null
-        val transAdapter = TransportAdapter<OutMsg> {
-            ++transAdapterCnt
-            reqId = it.reqId
+        val transAdapter = object : TransportAdapter<OutMsg>() {
+            override fun send(body: OutMsg) {
+                ++transAdapterCnt
+                reqId = body.reqId
+            }
         }
 
         var reqHandlerCnt = 0
         var outSrcCnt = 0
-        val reqHandler = ReqHandler<InMsg, OutMsg> { body ->
-            println("req: $body")
-            ++reqHandlerCnt
-            return@ReqHandler object : OutputSrc<OutMsg> {
-                override fun tryTake(): OutMsg {
-                    ++outSrcCnt
-                    return OutMsg(
-                        data = listOf("ACK"),
-                        rspReqId = body.reqId
-                    )
+        val reqHandler = object : ReqHandler<InMsg, OutMsg>() {
+            override fun handle(body: InMsg): OutputSrc<OutMsg> {
+                println("req: $body")
+                ++reqHandlerCnt
+                return object : OutputSrc<OutMsg>() {
+                    override fun tryTake(): OutMsg {
+                        ++outSrcCnt
+                        return OutMsg(
+                            data = listOf("ACK"),
+                            rspReqId = body.reqId
+                        )
+                    }
                 }
             }
+
         }
 
         // create delivery layer
-        val layer = create(
+        val layer = ReqRspLayerFactory<InMsg, OutMsg>().create(
             "test-id",
             inAdapter,
             outAdapter,
@@ -100,10 +103,14 @@ internal class ReqRspLayerTest {
         layer.output(
             OutMsg(listOf("data1, data2")),
             currTs,
-            ReqTimings(100, 10)
-        ) {
-            ++rspHandleCnt
-        }
+            ReqTimings(100, 10),
+            object: RspHandler<InMsg>() {
+                override fun handle(rsp: Rsp<InMsg>) {
+                    ++rspHandleCnt
+                }
+
+            }
+        )
 
         // process state 2 times
         currTs += 10

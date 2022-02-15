@@ -6,7 +6,7 @@ import by.citech.reqrsp.data.RspMeta
 /**
  * Output messages adapter
  */
-interface OutputAdapter<O> {
-    fun insertReqMeta(body: O, m: ReqMeta): O
-    fun insertRspMeta(body: O, m: RspMeta): O
+abstract class OutputAdapter<O> {
+    abstract fun insertReqMeta(body: O, m: ReqMeta): O
+    abstract fun insertRspMeta(body: O, m: RspMeta): O
 }
